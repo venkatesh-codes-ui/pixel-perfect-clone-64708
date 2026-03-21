@@ -55,7 +55,7 @@ function SidebarContent({ collapsed, onCollapse }: { collapsed: boolean; onColla
       </div>
 
       <nav className="flex-1 p-3 space-y-1">
-        {NAV_ITEMS.filter((item) => user && item.roles.includes(user.role)).map((item) => (
+        {NAV_ITEMS.filter((item) => user && (item.roles as readonly string[]).includes(user.role)).map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
