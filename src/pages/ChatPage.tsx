@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, memo } from "react";
+import type { ChatSession } from "@/types";
 import { useParams, useNavigate } from "react-router-dom";
 import { useChat } from "@/contexts/ChatContext";
 import ReactMarkdown from "react-markdown";
