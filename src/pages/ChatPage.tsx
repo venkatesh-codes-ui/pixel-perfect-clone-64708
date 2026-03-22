@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, memo } from "react";
+import { useState, useRef, useEffect, useCallback, memo, useMemo } from "react";
 import type { ChatSession } from "@/types";
 import { useParams, useNavigate } from "react-router-dom";
 import { useChat } from "@/contexts/ChatContext";
@@ -22,6 +22,9 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import type { Message, SourceDocument } from "@/types";
+import VoiceInput from "@/components/VoiceInput";
+import AvatarPanel from "@/components/AvatarPanel";
+import { stopSpeaking } from "@/services/avatarService";
 
 // Source panel
 function SourcePanel({ sources }: { sources: SourceDocument[] }) {
