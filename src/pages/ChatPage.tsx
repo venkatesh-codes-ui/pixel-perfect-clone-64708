@@ -427,6 +427,18 @@ export default function ChatPage() {
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [mobileSessionsOpen, setMobileSessionsOpen] = useState(false);
+  const [isVoiceListening, setIsVoiceListening] = useState(false);
+
+  // Get the last assistant message for TTS
+  const lastAssistantMessage = useMemo(() => {
+    const msgs = activeSession?.messages ?? [];
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      if (msgs[i].role === "assistant" && msgs[i].status === "done") {
+        return msgs[i].content;
+      }
+    }
+    return undefined;
+  }, [activeSession?.messages]);
 
   // Sync URL to state
   useEffect(() => {
@@ -479,6 +491,13 @@ export default function ChatPage() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [createNewSession, navigate]);
+
+  // Interrupt avatar speech when user starts voice input
+  useEffect(() => {
+    if (isVoiceListening) {
+      stopSpeaking();
+    }
+  }, [isVoiceListening]);
 
   const messages = activeSession?.messages ?? [];
   const isEmpty = messages.length === 0 && !streamingMessage;
@@ -540,7 +559,21 @@ export default function ChatPage() {
           </div>
         )}
 
-        <ChatInput onSend={sendMessage} onCancel={cancelRequest} isLoading={isLoading} />
+        <ChatInput
+          onSend={sendMessage}
+          onCancel={cancelRequest}
+          isLoading={isLoading}
+          onVoiceListening={setIsVoiceListening}
+        />
+      </div>
+
+      {/* Avatar side panel — desktop only */}
+      <div className="hidden lg:flex">
+        <AvatarPanel
+          lastAssistantMessage={lastAssistantMessage}
+          isProcessing={isLoading}
+          onInterrupt={cancelRequest}
+        />
       </div>
     </div>
   );
